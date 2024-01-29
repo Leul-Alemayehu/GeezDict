@@ -12,6 +12,10 @@ public class GeezVerbConj {
         System.out.println(Phonology.highHarmony(test2));
         System.out.println(Phonology.lowHarmony(test3));
         System.out.println(Phonology.velarAssimilation(test4));
+        GabraVerb shut = new GabraVerb("zgḥ");
+        for(String form : shut.getConjugatedForms()){
+            System.out.println(Phonology.historicLengthening(form));
+        }
     }
 }
 
