@@ -1,10 +1,11 @@
 import java.util.ArrayDeque;
 import java.util.Deque;
+
 public class Orthography {
     public static void main(String[] args) {
-        Deque<String> showDeque = simplify(tokenize("snaraggʷalla"));
-        while(!showDeque.isEmpty()){
-            System.out.println(showDeque.remove());
+        Deque<String> showDeque = simplify(tokenize("kämä ʾənsəsa zäʾiyəkəl ʾäʾməro kämä yəssäddäd"));
+        while (!showDeque.isEmpty()) {
+
         }
     }
 
@@ -59,6 +60,13 @@ public class Orthography {
                 tokenBuilder.setLength(0);
                 i--; // skip geminate consonant
             }
+
+            // deal with the exceptional case of word-initial vowels
+            if (i == 0 && Phonology.isVowel(String.valueOf(latinAlphabetString.charAt(i)))) {
+                tokenBuilder.insert(0, "(ʾ)");
+                tokenized.addFirst(tokenBuilder.toString());
+                tokenBuilder.setLength(0);
+            }
         }
         return tokenized;
     }
@@ -69,12 +77,11 @@ public class Orthography {
         StringBuilder simpleBuilder = new StringBuilder();
         while (!tokenized.isEmpty()) {
             simpleBuilder = new StringBuilder(tokenized.remove());
-            if(simpleBuilder.length() > 1 && simpleBuilder.charAt(0) == simpleBuilder.charAt(1)){
+            if (simpleBuilder.length() > 1 && simpleBuilder.charAt(0) == simpleBuilder.charAt(1)) {
                 simpleBuilder.deleteCharAt(0);
-                simplified.add(simpleBuilder.toString());
-            }
-            else{
-                simplified.add(simpleBuilder.toString());
+                simplified.add(simpleBuilder.toString().toLowerCase());
+            } else {
+                simplified.add(simpleBuilder.toString().toLowerCase());
             }
         }
         return simplified;

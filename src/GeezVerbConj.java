@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class GeezVerbConj {
     public static void main(String[] args) {
-        String test = "ḳäḥ";
+        String test = "ʾählähläh";
         String test2 = "mähirä";
         String test3 = "ʾəxäz";
-        String test4 = "wadaḳku";
+        String test4 = "läḥäkʷku";
         System.out.println(test4.charAt(4));
         System.out.println(Phonology.historicLengthening(test));
         System.out.println(Phonology.highHarmony(test2));
