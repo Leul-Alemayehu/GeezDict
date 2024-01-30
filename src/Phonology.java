@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Phonology {
     static final ArrayList<String> vowels = new ArrayList<>(Arrays.asList("a", "e", "i", "o", "u", "ä", "ə"));
-    static final ArrayList<String> consonants = new ArrayList<>(Arrays.asList("m", "n", "p", "t", "k", "kʷ", "ʾ", "b", "d", "g", "gʷ", "ṗ", "ṭ", "ḳ", "ḳʷ", "f", "s", "ś", "x", "ḥ", "h", "z", "ʿ", "ṣ", "ḍ", "w", "l", "r", "y"));
+    static final ArrayList<String> consonants = new ArrayList<>(Arrays.asList("m", "n", "p", "t", "k", "kʷ", "ʾ", "b", "d", "g", "gʷ", "ṗ", "ṭ", "ḳ", "ḳʷ", "f", "s", "ś", "x", "xʷ", "ḥ", "h", "z", "ʿ", "ṣ", "ḍ", "w", "l", "r", "y"));
     static final ArrayList<String> gutturals = new ArrayList<>(Arrays.asList("h", "ḥ", "x", "ʾ", "ʿ"));
 
     static final ArrayList<String> velars = new ArrayList<>(Arrays.asList("k", "g", "ḳ"));
@@ -18,7 +18,7 @@ public class Phonology {
     }
 
     public static boolean isLowVowel(String character) {
-        return Objects.equals(character, "a") || Objects.equals(character, "ä");
+        return Objects.equals(character.toLowerCase(), "a") || Objects.equals(character.toLowerCase(), "ä");
     }
 
     public static boolean isConsonant(String character) {
@@ -34,11 +34,11 @@ public class Phonology {
     }
 
     public static boolean isLabiovelar(String sequence) {
-        return sequence.equalsIgnoreCase("kʷ") || sequence.equalsIgnoreCase("gʷ") || sequence.equalsIgnoreCase("ḳʷ");
+        return sequence.equalsIgnoreCase("kʷ") || sequence.equalsIgnoreCase("gʷ") || sequence.equalsIgnoreCase("ḳʷ") || sequence.equalsIgnoreCase("xʷ");
     }
 
     public static boolean isGeminateLabiovelarSequence(String sequence) {
-        return sequence.equals("kkʷ") || sequence.equals("ggʷ") || sequence.equals("ḳḳʷ");
+        return sequence.equalsIgnoreCase("kkʷ") || sequence.equalsIgnoreCase("ggʷ") || sequence.equalsIgnoreCase("ḳḳʷ") || sequence.equalsIgnoreCase("xxʷ"); // Deal with geminate guttural cause why not
     }
 
     public static boolean isVowelInitial(String seq) {
@@ -47,11 +47,11 @@ public class Phonology {
 
     // Set every /ä/ followed by a syllable-closing guttural to /a/ unless the /ä/ is preceded by a word-initial ʾ
     public static String historicLengthening(String seq) {
-        if(seq.length() < 2) return seq;
+        if (seq.length() < 2) return seq;
         StringBuilder mod = new StringBuilder(seq);
 
         // Deal with ʾäH sequences first (do nothing)
-        if(mod.length() == 3 && mod.charAt(0) == 'ʾ') return mod.toString();
+        if (mod.length() == 3 && mod.charAt(0) == 'ʾ') return mod.toString();
 
         // Word-internal guttural condition
         for (int i = 0; i < mod.length() - 2; i++) {

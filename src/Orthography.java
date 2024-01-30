@@ -3,9 +3,9 @@ import java.util.Deque;
 
 public class Orthography {
     public static void main(String[] args) {
-        Deque<String> showDeque = simplify(tokenize("kämä ʾənsəsa zäʾiyəkəl ʾäʾməro kämä yəssäddäd"));
+        Deque<String> showDeque = simplify(tokenize("zäʾiyətxʷelläḳʷ"));
         while (!showDeque.isEmpty()) {
-
+            System.out.println(showDeque.remove());
         }
     }
 
@@ -52,7 +52,7 @@ public class Orthography {
                 tokenBuilder.setLength(0);
             }
 
-            // other geminates
+            // Other geminates
             else if (Phonology.isConsonant(String.valueOf(latinAlphabetString.charAt(i))) && latinAlphabetString.charAt(i) == latinAlphabetString.charAt(i - 1)) {
                 tokenBuilder.insert(0, latinAlphabetString.charAt(i));
                 tokenBuilder.insert(0, latinAlphabetString.charAt(i));
@@ -61,7 +61,7 @@ public class Orthography {
                 i--; // skip geminate consonant
             }
 
-            // deal with the exceptional case of word-initial vowels
+            // Deal with the exceptional case of word-initial vowels, which aren't even supposed to exist
             if (i == 0 && Phonology.isVowel(String.valueOf(latinAlphabetString.charAt(i)))) {
                 tokenBuilder.insert(0, "(ʾ)");
                 tokenized.addFirst(tokenBuilder.toString());
@@ -74,13 +74,15 @@ public class Orthography {
     // Turn transcription into transliteration with 1-to-1 correspondence with Geʿez script
     public static Deque<String> simplify(Deque<String> tokenized) {
         Deque<String> simplified = new ArrayDeque<>();
-        StringBuilder simpleBuilder = new StringBuilder();
+        StringBuilder simpleBuilder;
         while (!tokenized.isEmpty()) {
             simpleBuilder = new StringBuilder(tokenized.remove());
             if (simpleBuilder.length() > 1 && simpleBuilder.charAt(0) == simpleBuilder.charAt(1)) {
                 simpleBuilder.deleteCharAt(0);
                 simplified.add(simpleBuilder.toString().toLowerCase());
             } else {
+                // No distinction between syllables with sixth-order vowels and simple consonants
+                if (!Phonology.isVowel(String.valueOf(simpleBuilder.charAt(simpleBuilder.length()-1)))) simpleBuilder.append("ə");
                 simplified.add(simpleBuilder.toString().toLowerCase());
             }
         }
