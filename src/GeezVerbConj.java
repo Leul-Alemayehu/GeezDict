@@ -1,20 +1,16 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GeezVerbConj {
-    public static void main(String[] args) {
-        String test = "ʾählähläh";
-        String test2 = "mähirä";
-        String test3 = "ʾəxäz";
-        String test4 = "läḥäkʷku";
-        System.out.println(test4.charAt(4));
-        System.out.println(Phonology.historicLengthening(test));
-        System.out.println(Phonology.highHarmony(test2));
-        System.out.println(Phonology.lowHarmony(test3));
-        System.out.println(Phonology.velarAssimilation(test4));
+    public static void main(String[] args) throws IOException {
         GabraVerb shut = new GabraVerb("zgḥ");
+        NagaraVerb tell = new NagaraVerb("ngr");
         for(String form : shut.getConjugatedForms()){
-            System.out.println(Phonology.historicLengthening(form));
+            System.out.println(Orthography.stringify(Orthography.toGeezScript(Orthography.simplify(Orthography.tokenize(Phonology.historicLengthening(form))))));
+        }
+        for(String form : tell.getConjugatedForms()){
+            System.out.println(Orthography.stringify(Orthography.toGeezScript(Orthography.simplify(Orthography.tokenize(Phonology.historicLengthening(form))))));
         }
     }
 }

@@ -1,12 +1,22 @@
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashMap;
 
 public class Orthography {
     public static void main(String[] args) {
-        Deque<String> showDeque = simplify(tokenize("zäʾiyətxʷelläḳʷ"));
-        while (!showDeque.isEmpty()) {
-            System.out.println(showDeque.remove());
+        Deque<String> showDeque = toGeezScript(simplify(tokenize("namällək")));
+        System.out.println(stringify(showDeque));
+    }
+
+    public static String stringify(Deque<String> s) {
+        StringBuilder sb = new StringBuilder();
+        for(String str : s) {
+            sb.append(str);
         }
+        return sb.toString();
     }
 
     public static Deque<String> tokenize(String latinAlphabetString) {
@@ -63,7 +73,7 @@ public class Orthography {
 
             // Deal with the exceptional case of word-initial vowels, which aren't even supposed to exist
             if (i == 0 && Phonology.isVowel(String.valueOf(latinAlphabetString.charAt(i)))) {
-                tokenBuilder.insert(0, "(ʾ)");
+                tokenBuilder.insert(0, "ʾ");
                 tokenized.addFirst(tokenBuilder.toString());
                 tokenBuilder.setLength(0);
             }
@@ -82,10 +92,45 @@ public class Orthography {
                 simplified.add(simpleBuilder.toString().toLowerCase());
             } else {
                 // No distinction between syllables with sixth-order vowels and simple consonants
-                if (!Phonology.isVowel(String.valueOf(simpleBuilder.charAt(simpleBuilder.length()-1)))) simpleBuilder.append("ə");
+                if (!Phonology.isVowel(String.valueOf(simpleBuilder.charAt(simpleBuilder.length() - 1))))
+                    simpleBuilder.append("ə");
                 simplified.add(simpleBuilder.toString().toLowerCase());
             }
         }
         return simplified;
+    }
+
+    // Turn token stream to Geʿez script token stream
+    public static Deque<String> toGeezScript(Deque<String> simplified) {
+        String filePath = "./workfiles/Latin to Geez map - CSV_Friendly(1).csv";
+        Deque<String> geezTokens = new ArrayDeque<>();
+        HashMap<String, String> transliterationsToGeez = new HashMap<>();
+
+        // Read and parse the CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            // Skip the header line
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                // Split the line into Transliteration and Grapheme
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    transliterationsToGeez.put(parts[0].trim(), parts[1].trim());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for(String transliteration : simplified){
+            String geezToken = transliterationsToGeez.get(transliteration);
+            if (geezToken != null) {
+                geezTokens.addLast(geezToken);
+            } else {
+                System.err.println("Unmapped token: " + transliteration);
+            }
+        }
+        return geezTokens;
     }
 }
